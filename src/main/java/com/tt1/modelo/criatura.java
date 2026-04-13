@@ -1,4 +1,4 @@
-package com.tt1.simulacion.modelo;
+package com.tt1.modelo;
 
 import java.util.List;
 
