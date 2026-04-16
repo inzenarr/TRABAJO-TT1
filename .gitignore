@@ -1,0 +1,23 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# VS Code
+.vscode/
+
+# Spring Boot
+*.log
+spring-shell.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# GitHub Copilot / java-upgrade
+.github/java-upgrade/
