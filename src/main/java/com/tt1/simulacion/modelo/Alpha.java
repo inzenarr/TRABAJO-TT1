@@ -1,8 +1,6 @@
 package com.tt1.simulacion.modelo;
 
-/**
- * Alpha: criatura estática, color rojo.
- */
+/** Criatura estática. No se desplaza. Color: rojo. */
 public class Alpha extends Criatura {
 
     public Alpha(int x, int y) {

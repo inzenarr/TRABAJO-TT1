@@ -1,9 +1,6 @@
 package com.tt1.simulacion.modelo;
 
-/**
- * Clase base para todas las criaturas de la simulación.
- * Modelo anémico: solo contiene datos. El comportamiento reside en SimulacionService.
- */
+/** Entidad base del modelo anémico. Solo almacena posición (x, y). */
 public abstract class Criatura {
 
     protected final int x;

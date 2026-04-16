@@ -1,8 +1,6 @@
 package com.tt1.simulacion.modelo;
 
-/**
- * Beta: criatura móvil, color azul.
- */
+/** Criatura móvil. Se desplaza 1 celda aleatoriamente por paso. Color: azul. */
 public class Beta extends Criatura {
 
     public Beta(int x, int y) {
