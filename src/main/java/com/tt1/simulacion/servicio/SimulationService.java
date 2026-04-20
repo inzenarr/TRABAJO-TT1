@@ -5,6 +5,7 @@ import com.tt1.simulacion.modelo.Alpha;
 import com.tt1.simulacion.modelo.Beta;
 import com.tt1.simulacion.modelo.Criatura;
 import com.tt1.simulacion.modelo.Gamma;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Service
 public class SimulationService implements ISimulacionService{
     static final int ANCHO_TABLERO = 10;
     static final int PASOS = 5;
