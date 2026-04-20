@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 public class SimulationService implements ISimulacionService{
     static final int ANCHO_TABLERO = 10;
     static final int PASOS = 5;
