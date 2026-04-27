@@ -1,10 +1,7 @@
 package com.tt1.simulacion.servicio;
 
 import com.tt1.simulacion.dto.SolicitudDto;
-import com.tt1.simulacion.modelo.Alpha;
-import com.tt1.simulacion.modelo.Beta;
-import com.tt1.simulacion.modelo.Criatura;
-import com.tt1.simulacion.modelo.Gamma;
+import com.tt1.simulacion.modelo.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,8 +29,10 @@ public class SimulationService implements ISimulacionService{
 
     /** Contador autoincremental para generar tokens únicos*/
     private int contador = 1;
-    /**Mapa que contiene el nombre de usuario con su lista de tokens de simulación */
-    private final Map<String, List<Integer>> tokensUsuario = new ConcurrentHashMap<>();
+
+    /** Mapa que contiene el nombre de usuario relacionado con su objeto Cliente */
+    private final Map<String, Cliente> clientes = new ConcurrentHashMap<>();
+
     /**Mapa que relaciona un token de simulación con el resultado en formato de texto. */
     private final Map<Integer, String> resultados = new ConcurrentHashMap<>();
 
@@ -62,16 +61,13 @@ public class SimulationService implements ISimulacionService{
         //guardamos los resultados en el mapa
         resultados.put(token, resultado);
 
-        List<Integer> listaDelUsuario = tokensUsuario.get(nombreUsuario);
-
-        if (listaDelUsuario == null) {
-            //si no existe la creamos
-            listaDelUsuario = new ArrayList<>();
-            tokensUsuario.put(nombreUsuario, listaDelUsuario);
+        // Buscamos al cliente o lo creamos si no existe, y añadimos el token
+        Cliente cliente = clientes.get(nombreUsuario);
+        if (cliente == null) {
+            cliente = new Cliente(nombreUsuario);
+            clientes.put(nombreUsuario, cliente);
         }
-
-        //se añade el token a la lista
-        listaDelUsuario.add(token);
+        cliente.addToken(token);
 
         return token;
     }
@@ -85,7 +81,8 @@ public class SimulationService implements ISimulacionService{
      */
     @Override
     public List<Integer> getTokenUsuario(String usuario) {
-        return tokensUsuario.getOrDefault(usuario, List.of());
+        Cliente cliente = clientes.get(usuario);
+        return (cliente != null) ? cliente.getTokens() : List.of();
     }
 
     /**

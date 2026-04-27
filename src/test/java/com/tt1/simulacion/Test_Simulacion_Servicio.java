@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class Test_Simulacion_Servicio {
 
+    // Instancia del servicio para las pruebas unitarias
     private final SimulationService simulationService = new SimulationService();
 
     @Test
@@ -23,14 +24,14 @@ public class Test_Simulacion_Servicio {
 
         String resultado = simulationService.getResultado(token);
 
-        assertNotNull(resultado, "El resultado debería estar guardado en el mapa");
-        assertTrue(resultado.startsWith("10"), "El resultado debe empezar con el tamaño del tablero");
-        assertTrue(resultado.contains("rojo"), "El resultado debería contener el color rojo de Alpha");
+        assertNotNull(resultado, "El resultado debería estar guardado en el mapa de resultados");
+        assertTrue(resultado.startsWith("10"), "El resultado debe empezar con el tamaño del tablero (10)");
+        assertTrue(resultado.contains("rojo"), "El resultado debería contener el color rojo (propio de Alpha)");
     }
 
     @Test
-    void testTokensPorUsuario() {
-        String usuario = "ejemplo_tokens";
+    void testTokensAlmacenadosEnCliente() {
+        String usuario = "cliente_test";
         SolicitudDto dto = new SolicitudDto(List.of(1), List.of("beta"));
 
         int tokensPrevios = simulationService.getTokenUsuario(usuario).size();
@@ -40,26 +41,27 @@ public class Test_Simulacion_Servicio {
 
         List<Integer> tokens = simulationService.getTokenUsuario(usuario);
 
-        assertEquals(tokensPrevios + 2, tokens.size(), "El usuario debería tener 2 tokens nuevos guardados");
-        assertTrue(tokens.contains(t1), "La lista debería incluir el primer token");
-        assertTrue(tokens.contains(t2), "La lista debería incluir el segundo token");
+        assertNotNull(tokens, "La lista de tokens no debería ser nula");
+        assertEquals(tokensPrevios + 2, tokens.size(), "El objeto Cliente debería haber almacenado 2 tokens nuevos");
+        assertTrue(tokens.contains(t1), "La lista de tokens debe incluir el primer token generado");
+        assertTrue(tokens.contains(t2), "La lista de tokens debe incluir el segundo token generado");
     }
 
     @Test
     void testCreacionCriaturasInsensibleAMayusculas() {
-        SolicitudDto dto = new SolicitudDto(List.of(1, 1), List.of("ALPHA", "BeTa"));
+        SolicitudDto dto = new SolicitudDto(List.of(1, 1), List.of("ALPHA", "gAmMa"));
 
         int token = simulationService.solicitar("user_caps", dto);
         String resultado = simulationService.getResultado(token);
 
-        assertNotNull(resultado);
-        assertTrue(resultado.contains("rojo"), "Debería haber reconocido ALPHA (rojo)");
-        assertTrue(resultado.contains("azul"), "Debería haber reconocido BeTa (azul)");
+        assertNotNull(resultado, "La simulación debería haberse ejecutado");
+        assertTrue(resultado.contains("rojo"), "Debería haber reconocido 'ALPHA' como rojo");
+        assertTrue(resultado.contains("verde"), "Debería haber reconocido 'gAmMa' como verde");
     }
 
     @Test
     void testTokenInexistente() {
         String resultado = simulationService.getResultado(99999);
-        assertNull(resultado, "Si el token no existe, debería devolver null");
+        assertNull(resultado, "Para un token inexistente, el resultado debe ser null");
     }
 }
