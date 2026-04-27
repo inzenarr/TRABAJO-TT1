@@ -33,7 +33,6 @@ public class Test_Simulacion_Servicio {
         String usuario = "ejemplo_tokens";
         SolicitudDto dto = new SolicitudDto(List.of(1), List.of("beta"));
 
-        // Usamos la instancia para consultar tokens previos
         int tokensPrevios = simulationService.getTokenUsuario(usuario).size();
 
         int t1 = simulationService.solicitar(usuario, dto);
@@ -60,7 +59,6 @@ public class Test_Simulacion_Servicio {
 
     @Test
     void testTokenInexistente() {
-        // Probamos con la instancia
         String resultado = simulationService.getResultado(99999);
         assertNull(resultado, "Si el token no existe, debería devolver null");
     }
