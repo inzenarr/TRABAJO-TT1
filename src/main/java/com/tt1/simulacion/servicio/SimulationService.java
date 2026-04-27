@@ -36,11 +36,6 @@ public class SimulationService implements ISimulacionService{
     /**Mapa que relaciona un token de simulación con el resultado en formato de texto. */
     private final Map<Integer, String> resultados = new ConcurrentHashMap<>();
 
-    /*
-        -Crea y ejecuta una simulacion con las criaturas solicitadas
-        -Almacena el resultado y asigna el token al usuario
-    */
-
     /**
      * Solicita la creación y ejecución de una nueva simulación basada en los parámetros indicados.
      *
