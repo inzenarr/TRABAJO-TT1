@@ -112,7 +112,7 @@ public class SimulationService implements ISimulacionService{
     }
 
     //COMPORTAMIENTO CRIATURAS
-    List<Criatura> handleComportamiento(Criatura c) {
+    public List<Criatura> handleComportamiento(Criatura c) {
         //alpha en cada iteracion permanece donde esta
         if (c instanceof Alpha) {
             return List.of(new Alpha(c.getX(), c.getY()));
