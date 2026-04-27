@@ -53,6 +53,16 @@ public class SimulacionController {
         return new ResultsResponse(true, tok, null, data);
     }
 
+    // Con los records conseguimos generar mensajes de respuesta  (que Spring convierte automáticamente a JSON).
+    // Generan de forma automática un constructor, getters, equals, hashCode y toString.
+    //
+    // Incluimos como parámetros:
+    // - boolean done: Indica si la operación se completó con éxito (true) o si falló (false).
+    // - int tokenSolicitud: Identificador numérico único de la solicitud de simulación.
+    // - String errorMessage: Mensaje descriptivo si ha ocurrido algún error durante la solicitud (null si done es true).
+    // - boolean data: Indicador  del estado del proceso o de la validación de los datos.
+    // - String data:  Cadena de texto que contiene el historial y estado final del tablero simulado.
+
     record EmailResponse(boolean done, String errorMessage) {}
     record SolicitudResponse(boolean done, int tokenSolicitud, String errorMessage, boolean data) {}
     record ResultsResponse(boolean done, int tokenSolicitud, String errorMessage, String data) {}
