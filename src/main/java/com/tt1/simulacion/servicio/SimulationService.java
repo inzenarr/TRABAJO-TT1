@@ -26,8 +26,7 @@ public class SimulationService implements ISimulacionService{
         -Crea y ejecuta una simulacion con las criaturas solicitadas
         -Almacena el resultado y asigna el token al usuario
     */
-    @Override
-    public static int solicitar(String nombreUsuario, SolicitudDto solicitud) {
+    public int solicitar(String nombreUsuario, SolicitudDto solicitud) {
         //creamos y ejecutamos la simulacion de las criaturas
         List<Criatura> criaturas = crearCriaturas(solicitud);
         String resultado = simular(criaturas);
@@ -52,13 +51,11 @@ public class SimulationService implements ISimulacionService{
         return token;
     }
 
-    @Override
-    public static List<Integer> getTokenUsuario(String usuario) {
-        return tokensUsuario.getOrDefault(usuario, List.of());
+    public List<Integer> getTokenUsuario(String nombreUsuario) {
+        return tokensUsuario.getOrDefault(nombreUsuario, List.of());
     }
 
-    @Override
-    public static String getResultado(int token) {
+    public String getResultado(int token) {
         return resultados.get(token);
     }
 
