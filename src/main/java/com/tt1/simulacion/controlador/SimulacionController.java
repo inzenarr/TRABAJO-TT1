@@ -57,7 +57,7 @@ public class SimulacionController {
     // Generan de forma automática un constructor, getters, equals, hashCode y toString.
     //
     // Incluimos como parámetros:
-    // - boolean done: Indica si la operación se completó con éxito (true) o si falló (false).
+    // - boolean done: Indica si la operación se completó con éxito o si falló.
     // - int tokenSolicitud: Identificador numérico único de la solicitud de simulación.
     // - String errorMessage: Mensaje descriptivo si ha ocurrido algún error durante la solicitud (null si done es true).
     // - boolean data: Indicador  del estado del proceso o de la validación de los datos.
