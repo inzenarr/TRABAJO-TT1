@@ -65,7 +65,7 @@ public class SimulationService implements ISimulacionService{
     //CONSTRUCCION CRIATURAS
     private List<Criatura> crearCriaturas(SolicitudDto solicitud) {
         List<Criatura> criaturas = new ArrayList<>();
-        List<String> nombres = solicitud.getNombreEntidades();
+        List<String> nombres = solicitud.getNombreCriaturas();
         List<Integer> cantidades = solicitud.getCantidadesIniciales();
 
         for (int i = 0; i < nombres.size(); i++) {
