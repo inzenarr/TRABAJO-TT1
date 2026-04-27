@@ -35,7 +35,7 @@ class SimulacionControllerTest {
         mvc.perform(post("/Solicitud/Solicitar")
                 .param("nombreUsuario", "juan")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"nombreEntidades\":[\"Alpha\"],\"cantidadesIniciales\":[2]}"))
+                .content("{\"nombreCriaturas\":[\"Alpha\"],\"cantidadesIniciales\":[2]}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.done").value(true))
                 .andExpect(jsonPath("$.tokenSolicitud").isNumber());
