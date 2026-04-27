@@ -13,39 +13,19 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-
-/**
- * Servicio encargado de gestionar y ejecutar las simulaciones de criaturas.
- * <p>
- * Implementa {@link ISimulacionService} y maneja la lógica de creación,
- * comportamiento en el tablero y el almacenamiento de los resultados vinculados
- * a los usuarios mediante tokens de ejecución.
- * </p>
- */
 @Service
 public class SimulationService implements ISimulacionService{
-    /** Define el ancho y alto del tablero. */
     static final int ANCHO_TABLERO = 10;
-
-    /**Numero de pasos que durará cada simulación. */
     static final int PASOS = 5;
     private static final Random RANDOM = new Random();
-
-    /** Contador autoincremental para generar tokens únicos*/
     private int contador = 1;
-    /**Mapa que contiene el nombre de usuario con su lista de tokens de simulación */
     private final Map<String, List<Integer>> tokensUsuario = new ConcurrentHashMap<>();
-    /**Mapa que relaciona un token de simulación con el resultado en formato de texto. */
     private final Map<Integer, String> resultados = new ConcurrentHashMap<>();
 
-    /**
-     * Solicita la creación y ejecución de una nueva simulación basada en los parámetros indicados.
-     *
-     * @param nombreUsuario Nombre del usuario que hace la solicitud.
-     * @param solicitud Objeto de transferencia de datos que contiene la configuración
-     * de la simulación, como los nombres de las criaturas y sus cantidades iniciales.
-     * @return Token asignado a la simulación generada.
-     */
+    /*
+        -Crea y ejecuta una simulacion con las criaturas solicitadas
+        -Almacena el resultado y asigna el token al usuario
+    */
     @Override
     public int solicitar(String nombreUsuario, SolicitudDto solicitud) {
         //creamos y ejecutamos la simulacion de las criaturas
@@ -72,23 +52,10 @@ public class SimulationService implements ISimulacionService{
         return token;
     }
 
-    /**
-     * Devuelve una lista completa de los tokens de un usuario
-     *
-     * @param usuario El nombre del usuario del cual queremos obtener los tokens.
-     * @return lista de tokens del usuario.
-     */
     @Override
     public List<Integer> getTokenUsuario(String usuario) {
         return tokensUsuario.getOrDefault(usuario, List.of());
     }
-
-    /**
-     * Devuelve el resultado obtenido al realizar una petición con un token.
-     *
-     * @param token numero de identificación de la solicitud
-     * @return cadena de texto que representa el estado y evolución del tablero durante la evolución.
-     */
 
     @Override
     public String getResultado(int token) {
@@ -98,7 +65,7 @@ public class SimulationService implements ISimulacionService{
     //CONSTRUCCION CRIATURAS
     private List<Criatura> crearCriaturas(SolicitudDto solicitud) {
         List<Criatura> criaturas = new ArrayList<>();
-        List<String> nombres = solicitud.getNombreCriaturas();
+        List<String> nombres = solicitud.getNombreEntidades();
         List<Integer> cantidades = solicitud.getCantidadesIniciales();
 
         for (int i = 0; i < nombres.size(); i++) {
