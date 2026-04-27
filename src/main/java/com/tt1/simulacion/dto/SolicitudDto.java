@@ -1,5 +1,7 @@
 package com.tt1.simulacion.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
 /**
@@ -9,9 +11,13 @@ import java.util.List;
  * con sus respectivas cantidades a generar en el tablero.
  * </p>
  */
+@Schema(example = "{\"cantidadesIniciales\":[2,1],\"nombreCriaturas\":[\"alpha\",\"beta\"]}")
 public class SolicitudDto {
 
+    @Schema(example = "[2, 1]", description = "Cantidad de cada criatura a generar")
     private List<Integer> cantidadesIniciales;
+
+    @Schema(example = "[\"alpha\", \"beta\"]", description = "Nombres de las criaturas: alpha, beta o gamma")
     private List<String> nombreCriaturas;
 
     /**
