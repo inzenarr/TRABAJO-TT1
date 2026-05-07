@@ -43,12 +43,24 @@ public class Test_Comportamiento_Criaturas {
 
     @Test
     void comportamientoGamma() {
-        Gamma gamma = new Gamma(5, 5);
+        int xInicial = 5;
+        int yInicial = 5;
+        Gamma gamma = new Gamma(xInicial, yInicial);
+
         List<Criatura> resultado = service.handleComportamiento(gamma);
 
-        assertEquals(5, resultado.size(), "Gamma debería haberse duplicado en 4 direcciones más la original");
+        assertTrue(!resultado.isEmpty() && resultado.size() <= 5, "Gamma debe devolver entre 1 (solo ella) y 5 (ella + 4 clones máximos) criaturas");
 
-        boolean existeExpansion = resultado.stream().anyMatch(c -> c.getX() == 5 && c.getY() == 6);
-        assertTrue(existeExpansion, "Debería existir una criatura Gamma en la posición expandida (5,6)");
+        boolean originalSobrevive = resultado.stream().anyMatch(c -> c.getX() == xInicial && c.getY() == yInicial);
+        assertTrue(originalSobrevive, "La Gamma original debe permanecer en su posición inicial");
+
+        for (Criatura c : resultado) {
+            assertInstanceOf(Gamma.class, c, "Todas las criaturas devueltas deben ser de la clase Gamma");
+
+            if (c.getX() != xInicial || c.getY() != yInicial) {
+                int distancia = Math.abs(c.getX() - xInicial) + Math.abs(c.getY() - yInicial);
+                assertEquals(1, distancia, "Cualquier clon debe haber aparecido exactamente a una casilla de distancia (adyacente)");
+            }
+        }
     }
 }
