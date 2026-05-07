@@ -1,5 +1,6 @@
 package com.tt1.simulacion.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class SolicitudDto {
     @Schema(example = "[2, 1]", description = "Cantidad de cada criatura a generar")
     private List<Integer> cantidadesIniciales;
 
+    @JsonAlias("nombreEntidades")
     @Schema(example = "[\"alpha\", \"beta\"]", description = "Nombres de las criaturas: alpha, beta o gamma")
     private List<String> nombreCriaturas;
 
