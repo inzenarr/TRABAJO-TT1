@@ -5,9 +5,11 @@ import com.tt1.simulacion.modelo.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -97,13 +99,17 @@ public class SimulationService implements ISimulacionService{
         List<Criatura> criaturas = new ArrayList<>();
         List<String> nombres = solicitud.getNombreCriaturas();
         List<Integer> cantidades = solicitud.getCantidadesIniciales();
+        Set<String> ocupadas = new HashSet<>();
 
         for (int i = 0; i < nombres.size(); i++) {
             int cantidad = cantidades.get(i);
             String nombre = nombres.get(i).toLowerCase();
             for (int j = 0; j < cantidad; j++) {
-                int x = RANDOM.nextInt(ANCHO_TABLERO);
-                int y = RANDOM.nextInt(ANCHO_TABLERO);
+                int x, y;
+                do {
+                    x = RANDOM.nextInt(ANCHO_TABLERO);
+                    y = RANDOM.nextInt(ANCHO_TABLERO);
+                } while (!ocupadas.add(x + "," + y));
                 criaturas.add(switch (nombre) {
                     case "alpha" -> new Alpha(x, y);
                     case "beta"  -> new Beta(x, y);
@@ -123,11 +129,57 @@ public class SimulationService implements ISimulacionService{
         List<Criatura> actual = new ArrayList<>(criaturas);
 
         for (int t = 0; t < PASOS; t++) {
-            List<Criatura> siguiente = new ArrayList<>();
             for (Criatura c : actual) {
                 sb.append(t).append(",").append(c.getY()).append(",").append(c.getX()).append(",").append(getColor(c)).append("\n");
-                siguiente.addAll(handleComportamiento(c));
             }
+
+            // Posiciones ocupadas al inicio del paso
+            Set<String> ocupadas = new HashSet<>();
+            for (Criatura c : actual) {
+                ocupadas.add(c.getX() + "," + c.getY());
+            }
+
+            Set<String> destinosReservados = new HashSet<>();
+            List<Criatura> siguiente = new ArrayList<>();
+
+            // PASADA 1: mover Alpha y Beta primero
+            for (Criatura c : actual) {
+                if (c instanceof Alpha) {
+                    siguiente.add(new Alpha(c.getX(), c.getY()));
+                    destinosReservados.add(c.getX() + "," + c.getY());
+
+                } else if (c instanceof Beta) {
+                    Criatura candidato = handleComportamiento(c).get(0);
+                    String posC = candidato.getX() + "," + candidato.getY();
+                    String posActual = c.getX() + "," + c.getY();
+                    boolean libre = !ocupadas.contains(posC) && !destinosReservados.contains(posC);
+                    if (!posC.equals(posActual) && libre) {
+                        destinosReservados.add(posC);
+                        siguiente.add(candidato);
+                    } else {
+                        destinosReservados.add(posActual);
+                        siguiente.add(new Beta(c.getX(), c.getY()));
+                    }
+                }
+            }
+
+            // PASADA 2: expandir Gamma usando posiciones finales de Alpha/Beta
+            for (Criatura c : actual) {
+                if (c instanceof Gamma) {
+                    String posActual = c.getX() + "," + c.getY();
+                    siguiente.add(new Gamma(c.getX(), c.getY()));
+                    destinosReservados.add(posActual);
+
+                    for (Criatura candidato : handleComportamiento(c)) {
+                        String posC = candidato.getX() + "," + candidato.getY();
+                        if (!posC.equals(posActual) && !destinosReservados.contains(posC)) {
+                            destinosReservados.add(posC);
+                            siguiente.add(candidato);
+                        }
+                    }
+                }
+            }
+
             actual = siguiente;
         }
         return sb.toString().trim();
@@ -135,9 +187,9 @@ public class SimulationService implements ISimulacionService{
 
     //COLORES CRIATURA
     String getColor(Criatura c) {
-        if (c instanceof Alpha) return "rojo";
-        if (c instanceof Beta)  return "azul";
-        if (c instanceof Gamma) return "verde";
+        if (c instanceof Alpha) return "red";
+        if (c instanceof Beta)  return "blue";
+        if (c instanceof Gamma) return "green";
         return null;
     }
 

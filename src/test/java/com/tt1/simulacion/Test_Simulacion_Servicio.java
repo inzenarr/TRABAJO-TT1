@@ -26,7 +26,7 @@ public class Test_Simulacion_Servicio {
 
         assertNotNull(resultado, "El resultado debería estar guardado en el mapa de resultados");
         assertTrue(resultado.startsWith("10"), "El resultado debe empezar con el tamaño del tablero (10)");
-        assertTrue(resultado.contains("rojo"), "El resultado debería contener el color rojo (propio de Alpha)");
+        assertTrue(resultado.contains("red"), "El resultado debería contener el color red (propio de Alpha)");
     }
 
     @Test
@@ -55,8 +55,8 @@ public class Test_Simulacion_Servicio {
         String resultado = simulationService.getResultado(token);
 
         assertNotNull(resultado, "La simulación debería haberse ejecutado");
-        assertTrue(resultado.contains("rojo"), "Debería haber reconocido 'ALPHA' como rojo");
-        assertTrue(resultado.contains("verde"), "Debería haber reconocido 'gAmMa' como verde");
+        assertTrue(resultado.contains("red"), "Debería haber reconocido 'ALPHA' como red");
+        assertTrue(resultado.contains("green"), "Debería haber reconocido 'gAmMa' como green");
     }
 
     @Test

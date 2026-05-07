@@ -1,0 +1,22 @@
+services:
+  simulacion:
+    build: .
+    ports:
+      - "5000:5000"
+    networks:
+      - tt1-network
+
+  frontend:
+    build:
+      context: ../trabajo-individual-tt1-pr-ctica-5-dakhadil
+    ports:
+      - "8081:8081"
+    environment:
+      - SIMULACION_BASE_URL=http://simulacion:5000
+    networks:
+      - tt1-network
+    depends_on:
+      - simulacion
+
+networks:
+  tt1-network:
