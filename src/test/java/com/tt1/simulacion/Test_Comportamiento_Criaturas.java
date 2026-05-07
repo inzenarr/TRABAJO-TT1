@@ -49,18 +49,23 @@ public class Test_Comportamiento_Criaturas {
 
         List<Criatura> resultado = service.handleComportamiento(gamma);
 
-        assertTrue(!resultado.isEmpty() && resultado.size() <= 5, "Gamma debe devolver entre 1 (solo ella) y 5 (ella + 4 clones máximos) criaturas");
+        assertTrue(resultado.size() == 1 || resultado.size() == 2,
+                "Gamma debe devolver 1 (si falla la probabilidad) o 2 (si logra clonarse)");
 
-        boolean originalSobrevive = resultado.stream().anyMatch(c -> c.getX() == xInicial && c.getY() == yInicial);
+        boolean originalSobrevive = resultado.stream()
+                .anyMatch(c -> c.getX() == xInicial && c.getY() == yInicial);
         assertTrue(originalSobrevive, "La Gamma original debe permanecer en su posición inicial");
 
-        for (Criatura c : resultado) {
-            assertInstanceOf(Gamma.class, c, "Todas las criaturas devueltas deben ser de la clase Gamma");
+        if (resultado.size() == 2) {
+            Criatura hijo = resultado.stream()
+                    .filter(c -> c.getX() != xInicial || c.getY() != yInicial)
+                    .findFirst()
+                    .orElseThrow();
 
-            if (c.getX() != xInicial || c.getY() != yInicial) {
-                int distancia = Math.abs(c.getX() - xInicial) + Math.abs(c.getY() - yInicial);
-                assertEquals(1, distancia, "Cualquier clon debe haber aparecido exactamente a una casilla de distancia (adyacente)");
-            }
+            assertInstanceOf(Gamma.class, hijo, "El clon debe ser tipo Gamma");
+
+            int distancia = Math.abs(hijo.getX() - xInicial) + Math.abs(hijo.getY() - yInicial);
+            assertEquals(1, distancia, "El clon debe haber aparecido a 1 sola casilla de distancia");
         }
     }
 }
