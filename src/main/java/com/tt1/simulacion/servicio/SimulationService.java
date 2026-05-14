@@ -5,6 +5,8 @@ import com.tt1.simulacion.modelo.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,9 +28,10 @@ public class SimulationService implements ISimulacionService{
     /** Define el ancho y alto del tablero. */
     static final int ANCHO_TABLERO = 10;
 
-    /**Numero de pasos que durará cada simulación. */
-    static final int PASOS = 5;
     private static final Random RANDOM = new Random();
+
+    @Value("${simulacion.pasos:5}")
+    private int pasos;
 
     @Value("${simulacion.color.alpha:red}")
     private String colorAlpha;
@@ -42,22 +45,31 @@ public class SimulationService implements ISimulacionService{
     @Value("${simulacion.gamma.prob.hijo:5}")
     private int gammaProbHijo;
 
+    @Value("${simulacion.comida.probabilidad:20}")
+    private int comidaProbabilidad;
+
+    @Value("${simulacion.criatura.turnos.sin.comer:5}")
+    private int maxTurnosSinComer;
+
     /** Constructor por defecto: Spring inyecta los @Value. Usado también en tests. */
     public SimulationService() {
-        this.colorAlpha    = "red";
-        this.colorBeta     = "blue";
-        this.colorGamma    = "green";
-        this.gammaProbHijo = 5;
+        this.pasos              = 5;
+        this.colorAlpha         = "red";
+        this.colorBeta          = "blue";
+        this.colorGamma         = "green";
+        this.gammaProbHijo      = 5;
+        this.comidaProbabilidad = 20;
+        this.maxTurnosSinComer  = 5;
     }
 
     /** Contador autoincremental para generar tokens únicos*/
-    private int contador = 1;
+    // eliminado: token ahora es UUID
 
     /** Mapa que contiene el nombre de usuario relacionado con su objeto Cliente */
     private final Map<String, Cliente> clientes = new ConcurrentHashMap<>();
 
     /**Mapa que relaciona un token de simulación con el resultado en formato de texto. */
-    private final Map<Integer, String> resultados = new ConcurrentHashMap<>();
+    private final Map<String, String> resultados = new ConcurrentHashMap<>();
 
     /**
      * Solicita la creación y ejecución de una nueva simulación basada en los parámetros indicados.
@@ -68,13 +80,12 @@ public class SimulationService implements ISimulacionService{
      * @return Token asignado a la simulación generada.
      */
     @Override
-    public int solicitar(String nombreUsuario, SolicitudDto solicitud) {
+    public String solicitar(String nombreUsuario, SolicitudDto solicitud) {
         //creamos y ejecutamos la simulacion de las criaturas
         List<Criatura> criaturas = crearCriaturas(solicitud);
         String resultado = simular(criaturas);
 
-        int token = contador;
-        contador = contador + 1;
+        String token = UUID.randomUUID().toString();
 
         //guardamos los resultados en el mapa
         resultados.put(token, resultado);
@@ -98,7 +109,7 @@ public class SimulationService implements ISimulacionService{
      * @return lista de tokens del usuario.
      */
     @Override
-    public List<Integer> getTokenUsuario(String usuario) {
+    public List<String> getTokenUsuario(String usuario) {
         Cliente cliente = clientes.get(usuario);
         return (cliente != null) ? cliente.getTokens() : List.of();
     }
@@ -111,7 +122,7 @@ public class SimulationService implements ISimulacionService{
      */
 
     @Override
-    public String getResultado(int token) {
+    public String getResultado(String token) {
         return resultados.get(token);
     }
 
@@ -149,9 +160,19 @@ public class SimulationService implements ISimulacionService{
         sb.append(ANCHO_TABLERO).append("\n");
         List<Criatura> actual = new ArrayList<>(criaturas);
 
-        for (int t = 0; t < PASOS; t++) {
+        for (int t = 0; t < pasos; t++) {
             for (Criatura c : actual) {
                 sb.append(t).append(",").append(c.getY()).append(",").append(c.getX()).append(",").append(getColor(c)).append("\n");
+            }
+
+            // Generar comida aleatoria en cada casilla (prob configurable)
+            Set<String> comidasHoy = new HashSet<>();
+            for (int cx = 0; cx < ANCHO_TABLERO; cx++) {
+                for (int cy = 0; cy < ANCHO_TABLERO; cy++) {
+                    if (RANDOM.nextInt(100) < comidaProbabilidad) {
+                        comidasHoy.add(cx + "," + cy);
+                    }
+                }
             }
 
             // Posiciones ocupadas al inicio del paso
@@ -166,20 +187,29 @@ public class SimulationService implements ISimulacionService{
             // PASADA 1: mover Alpha y Beta primero
             for (Criatura c : actual) {
                 if (c instanceof Alpha) {
-                    siguiente.add(new Alpha(c.getX(), c.getY()));
-                    destinosReservados.add(c.getX() + "," + c.getY());
+                    String pos = c.getX() + "," + c.getY();
+                    boolean comio = comidasHoy.remove(pos);
+                    int nuevoHambre = comio ? 0 : c.getHambre() + 1;
+                    if (nuevoHambre < maxTurnosSinComer) {
+                        siguiente.add(new Alpha(c.getX(), c.getY(), nuevoHambre));
+                        destinosReservados.add(pos);
+                    }
 
                 } else if (c instanceof Beta) {
                     Criatura candidato = handleComportamiento(c).get(0);
                     String posC = candidato.getX() + "," + candidato.getY();
                     String posActual = c.getX() + "," + c.getY();
                     boolean libre = !ocupadas.contains(posC) && !destinosReservados.contains(posC);
-                    if (!posC.equals(posActual) && libre) {
-                        destinosReservados.add(posC);
-                        siguiente.add(candidato);
-                    } else {
-                        destinosReservados.add(posActual);
-                        siguiente.add(new Beta(c.getX(), c.getY()));
+                    String finalPos = (!posC.equals(posActual) && libre) ? posC : posActual;
+                    boolean comio = comidasHoy.remove(finalPos);
+                    int nuevoHambre = comio ? 0 : c.getHambre() + 1;
+                    if (nuevoHambre < maxTurnosSinComer) {
+                        destinosReservados.add(finalPos);
+                        if (finalPos.equals(posActual)) {
+                            siguiente.add(new Beta(c.getX(), c.getY(), nuevoHambre));
+                        } else {
+                            siguiente.add(new Beta(candidato.getX(), candidato.getY(), nuevoHambre));
+                        }
                     }
                 }
             }
@@ -188,14 +218,20 @@ public class SimulationService implements ISimulacionService{
             for (Criatura c : actual) {
                 if (c instanceof Gamma) {
                     String posActual = c.getX() + "," + c.getY();
-                    siguiente.add(new Gamma(c.getX(), c.getY()));
-                    destinosReservados.add(posActual);
+                    boolean comioPadre = comidasHoy.remove(posActual);
+                    int nuevoHambrePadre = comioPadre ? 0 : c.getHambre() + 1;
 
-                    for (Criatura candidato : handleComportamiento(c)) {
-                        String posC = candidato.getX() + "," + candidato.getY();
-                        if (!posC.equals(posActual) && !ocupadas.contains(posC) && !destinosReservados.contains(posC)) {
-                            destinosReservados.add(posC);
-                            siguiente.add(candidato);
+                    if (nuevoHambrePadre < maxTurnosSinComer) {
+                        siguiente.add(new Gamma(c.getX(), c.getY(), nuevoHambrePadre));
+                        destinosReservados.add(posActual);
+
+                        for (Criatura candidato : handleComportamiento(c)) {
+                            String posC = candidato.getX() + "," + candidato.getY();
+                            if (!posC.equals(posActual) && !ocupadas.contains(posC) && !destinosReservados.contains(posC)) {
+                                destinosReservados.add(posC);
+                                comidasHoy.remove(posC); // consume comida si la hay (hijo nace con hambre=0)
+                                siguiente.add(new Gamma(candidato.getX(), candidato.getY(), 0));
+                            }
                         }
                     }
                 }
