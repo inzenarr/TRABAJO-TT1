@@ -6,4 +6,8 @@ public class Gamma extends Criatura {
     public Gamma(int x, int y) {
         super(x, y);
     }
+
+    public Gamma(int x, int y, int hambre) {
+        super(x, y, hambre);
+    }
 }

@@ -6,4 +6,8 @@ public class Beta extends Criatura {
     public Beta(int x, int y) {
         super(x, y);
     }
+
+    public Beta(int x, int y, int hambre) {
+        super(x, y, hambre);
+    }
 }
