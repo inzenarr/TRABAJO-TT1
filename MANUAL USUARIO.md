@@ -372,8 +372,6 @@ docker compose logs -f
 
 ---
 
----
-
 ## Información de contacto de la empresa/negocio
 
 Para reportes de fallos (bugs), sugerencias de mejora o integración del frontend, por favor contacte con:
