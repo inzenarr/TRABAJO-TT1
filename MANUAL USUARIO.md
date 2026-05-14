@@ -360,3 +360,23 @@ docker compose restart
 ```powershell
 docker compose logs -f
 ```
+
+---
+
+## Glosario
+
+* **API:** Interfaz de Programación de Aplicaciones. Forma en la que se comunica con el sistema.
+* **Token:** Identificador numérico autoincremental único que se asigna a cada simulación ejecutada.
+* **Cliente:** Estructura de datos interna que asocia a un nombre de usuario con su historial de tokens.
+* **DTO (Data Transfer Object):** Formato del paquete de datos JSON utilizado para enviar la configuración de la simulación.
+
+---
+
+---
+
+## Información de contacto de la empresa/negocio
+
+Para reportes de fallos (bugs), sugerencias de mejora o integración del frontend, por favor contacte con:
+
+* **Repositorio del código:** trabajo
+* **Sección de comentarios / Issues:** Por favor, abra un "Issue" en el repositorio oficial para seguimiento de errores o inicie una “Discussion”.
