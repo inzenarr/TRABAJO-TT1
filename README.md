@@ -36,7 +36,6 @@ Criatura  (abstracta)
 | Constante       | Valor | Descripción                        |
 |-----------------|-------|------------------------------------|
 | `ANCHO_TABLERO` | 10    | Número de columnas y filas.        |
-| `PASOS`         | 5     | Iteraciones por simulación.        |
 
 ### Formato de salida
 
