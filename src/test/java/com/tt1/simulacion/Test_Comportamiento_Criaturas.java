@@ -46,26 +46,36 @@ public class Test_Comportamiento_Criaturas {
         int xInicial = 5;
         int yInicial = 5;
         Gamma gamma = new Gamma(xInicial, yInicial);
+        boolean hijoObservado = false;
 
-        List<Criatura> resultado = service.handleComportamiento(gamma);
+        // Con prob 1/5, en 100 intentos la probabilidad de no ver ningun hijo es (4/5)^100 ≈ 0.000002%
+        for (int i = 0; i < 100; i++) {
+            List<Criatura> resultado = service.handleComportamiento(gamma);
 
-        assertTrue(resultado.size() == 1 || resultado.size() == 2,
-                "Gamma debe devolver 1 (si falla la probabilidad) o 2 (si logra clonarse)");
+            // Solo puede devolver el padre o el padre + 1 hijo
+            assertTrue(resultado.size() == 1 || resultado.size() == 2,
+                    "Gamma debe devolver 1 o 2 criaturas");
 
-        boolean originalSobrevive = resultado.stream()
-                .anyMatch(c -> c.getX() == xInicial && c.getY() == yInicial);
-        assertTrue(originalSobrevive, "La Gamma original debe permanecer en su posición inicial");
+            // El padre siempre permanece en su posición original
+            boolean originalSobrevive = resultado.stream()
+                    .anyMatch(c -> c.getX() == xInicial && c.getY() == yInicial);
+            assertTrue(originalSobrevive, "La Gamma original debe permanecer en su posición inicial");
 
-        if (resultado.size() == 2) {
-            Criatura hijo = resultado.stream()
-                    .filter(c -> c.getX() != xInicial || c.getY() != yInicial)
-                    .findFirst()
-                    .orElseThrow();
+            if (resultado.size() == 2) {
+                Criatura hijo = resultado.stream()
+                        .filter(c -> c.getX() != xInicial || c.getY() != yInicial)
+                        .findFirst()
+                        .orElseThrow();
 
-            assertInstanceOf(Gamma.class, hijo, "El clon debe ser tipo Gamma");
+                assertInstanceOf(Gamma.class, hijo, "El hijo debe ser tipo Gamma");
 
-            int distancia = Math.abs(hijo.getX() - xInicial) + Math.abs(hijo.getY() - yInicial);
-            assertEquals(1, distancia, "El clon debe haber aparecido a 1 sola casilla de distancia");
+                int distancia = Math.abs(hijo.getX() - xInicial) + Math.abs(hijo.getY() - yInicial);
+                assertEquals(1, distancia, "El hijo debe estar exactamente a 1 casilla del padre");
+
+                hijoObservado = true;
+            }
         }
+
+        assertTrue(hijoObservado, "En 100 intentos debería haberse generado al menos un hijo (prob 1/5)");
     }
 }

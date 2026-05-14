@@ -2,6 +2,7 @@ package com.tt1.simulacion.servicio;
 
 import com.tt1.simulacion.dto.SolicitudDto;
 import com.tt1.simulacion.modelo.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,6 +29,26 @@ public class SimulationService implements ISimulacionService{
     /**Numero de pasos que durará cada simulación. */
     static final int PASOS = 5;
     private static final Random RANDOM = new Random();
+
+    @Value("${simulacion.color.alpha:red}")
+    private String colorAlpha;
+
+    @Value("${simulacion.color.beta:blue}")
+    private String colorBeta;
+
+    @Value("${simulacion.color.gamma:green}")
+    private String colorGamma;
+
+    @Value("${simulacion.gamma.prob.hijo:5}")
+    private int gammaProbHijo;
+
+    /** Constructor por defecto: Spring inyecta los @Value. Usado también en tests. */
+    public SimulationService() {
+        this.colorAlpha    = "red";
+        this.colorBeta     = "blue";
+        this.colorGamma    = "green";
+        this.gammaProbHijo = 5;
+    }
 
     /** Contador autoincremental para generar tokens únicos*/
     private int contador = 1;
@@ -172,7 +193,7 @@ public class SimulationService implements ISimulacionService{
 
                     for (Criatura candidato : handleComportamiento(c)) {
                         String posC = candidato.getX() + "," + candidato.getY();
-                        if (!posC.equals(posActual) && !destinosReservados.contains(posC)) {
+                        if (!posC.equals(posActual) && !ocupadas.contains(posC) && !destinosReservados.contains(posC)) {
                             destinosReservados.add(posC);
                             siguiente.add(candidato);
                         }
@@ -187,9 +208,9 @@ public class SimulationService implements ISimulacionService{
 
     //COLORES CRIATURA
     String getColor(Criatura c) {
-        if (c instanceof Alpha) return "red";
-        if (c instanceof Beta)  return "blue";
-        if (c instanceof Gamma) return "green";
+        if (c instanceof Alpha) return colorAlpha;
+        if (c instanceof Beta)  return colorBeta;
+        if (c instanceof Gamma) return colorGamma;
         return null;
     }
 
@@ -210,12 +231,13 @@ public class SimulationService implements ISimulacionService{
             return List.of(new Beta(nx, ny));
         }
 
-        //gamma en cada iteracion se propaga en todas las direcciones, es decir el cuadrado crece +1 para todos lados
+        //gamma permanece en su posicion; con prob 1/gammaProbHijo genera un hijo en una casilla adyacente aleatoria
         if (c instanceof Gamma) {
-            int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
             List<Criatura> resultado = new ArrayList<>();
             resultado.add(new Gamma(c.getX(), c.getY()));
-            for (int[] dir : dirs) {
+            if (RANDOM.nextInt(gammaProbHijo) == 0) {
+                int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+                int[] dir = dirs[RANDOM.nextInt(4)];
                 int nx = c.getX() + dir[0];
                 int ny = c.getY() + dir[1];
                 if (nx >= 0 && nx < ANCHO_TABLERO && ny >= 0 && ny < ANCHO_TABLERO) {
