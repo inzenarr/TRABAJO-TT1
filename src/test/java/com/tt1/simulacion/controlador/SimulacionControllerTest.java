@@ -38,7 +38,7 @@ class SimulacionControllerTest {
                 .content("{\"nombreCriaturas\":[\"Alpha\"],\"cantidadesIniciales\":[2]}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.done").value(true))
-                .andExpect(jsonPath("$.tokenSolicitud").isNumber());
+                .andExpect(jsonPath("$.tokenSolicitud").isString());
     }
 
     // ── GET /Solicitud/GetSolicitudesUsuario ───────────────────────────────

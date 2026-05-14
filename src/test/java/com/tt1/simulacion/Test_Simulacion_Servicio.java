@@ -18,9 +18,10 @@ public class Test_Simulacion_Servicio {
         String usuario = "ejemplo_recuperacion";
         SolicitudDto dto = new SolicitudDto(List.of(1), List.of("alpha"));
 
-        int token = simulationService.solicitar(usuario, dto);
+        String token = simulationService.solicitar(usuario, dto);
 
-        assertTrue(token > 0, "El token debería ser un número positivo");
+        assertNotNull(token, "El token no deberia ser nulo");
+        assertFalse(token.isBlank(),"El token deberia ser una cadena no vacía (UUID)");
 
         String resultado = simulationService.getResultado(token);
 
@@ -36,10 +37,10 @@ public class Test_Simulacion_Servicio {
 
         int tokensPrevios = simulationService.getTokenUsuario(usuario).size();
 
-        int t1 = simulationService.solicitar(usuario, dto);
-        int t2 = simulationService.solicitar(usuario, dto);
+        String t1 = simulationService.solicitar(usuario, dto);
+        String t2 = simulationService.solicitar(usuario, dto);
 
-        List<Integer> tokens = simulationService.getTokenUsuario(usuario);
+        List<String> tokens = simulationService.getTokenUsuario(usuario);
 
         assertNotNull(tokens, "La lista de tokens no debería ser nula");
         assertEquals(tokensPrevios + 2, tokens.size(), "El objeto Cliente debería haber almacenado 2 tokens nuevos");
@@ -51,7 +52,7 @@ public class Test_Simulacion_Servicio {
     void testCreacionCriaturasInsensibleAMayusculas() {
         SolicitudDto dto = new SolicitudDto(List.of(1, 1), List.of("ALPHA", "gAmMa"));
 
-        int token = simulationService.solicitar("user_caps", dto);
+        String token = simulationService.solicitar("user_caps", dto);
         String resultado = simulationService.getResultado(token);
 
         assertNotNull(resultado, "La simulación debería haberse ejecutado");
@@ -61,7 +62,7 @@ public class Test_Simulacion_Servicio {
 
     @Test
     void testTokenInexistente() {
-        String resultado = simulationService.getResultado(99999);
+        String resultado = simulationService.getResultado("token-inexistente-xyz");
         assertNull(resultado, "Para un token inexistente, el resultado debe ser null");
     }
 }
