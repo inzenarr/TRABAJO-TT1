@@ -1,8 +1,11 @@
 # Manual de Usuario — Simulación TT1
 
 **Producto:** API Motor de Simulación de Criaturas
+
 **Versión:** 1.0.0
+
 **Desarrollado por:** [Daviti,Jose e Iñigo]
+
 **Fecha:** Mayo 2026
 
 ## Página del título
