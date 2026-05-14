@@ -27,20 +27,20 @@ public class SimulacionController {
     @ResponseStatus(HttpStatus.CREATED)
     public SolicitudResponse solicitar(@RequestParam String nombreUsuario,
                                        @RequestBody SolicitudDto solicitud) {
-        int token = servicio.solicitar(nombreUsuario, solicitud);
+        String token = servicio.solicitar(nombreUsuario, solicitud);
         return new SolicitudResponse(true, token, null, true);
     }
 
     @GetMapping("/Solicitud/GetSolicitudesUsuario")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Integer> getSolicitudesUsuario(@RequestParam String nombreUsuario) {
+    public List<String> getSolicitudesUsuario(@RequestParam String nombreUsuario) {
         return servicio.getTokenUsuario(nombreUsuario);
     }
 
     @GetMapping("/Solicitud/ComprobarSolicitud")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Integer> comprobarSolicitud(@RequestParam String nombreUsuario,
-                                            @RequestParam int tok) {
+    public List<String> comprobarSolicitud(@RequestParam String nombreUsuario,
+                                            @RequestParam String tok) {
         String resultado = servicio.getResultado(tok);
         return resultado != null ? List.of(tok) : List.of();
     }
@@ -48,7 +48,7 @@ public class SimulacionController {
     @PostMapping("/Resultados")
     @ResponseStatus(HttpStatus.CREATED)
     public ResultsResponse resultados(@RequestParam String nombreUsuario,
-                                      @RequestParam int tok) {
+                                      @RequestParam String tok) {
         String data = servicio.getResultado(tok);
         return new ResultsResponse(true, tok, null, data);
     }
@@ -64,6 +64,6 @@ public class SimulacionController {
     // - String data:  Cadena de texto que contiene el historial y estado final del tablero simulado.
 
     record EmailResponse(boolean done, String errorMessage) {}
-    record SolicitudResponse(boolean done, int tokenSolicitud, String errorMessage, boolean data) {}
-    record ResultsResponse(boolean done, int tokenSolicitud, String errorMessage, String data) {}
+    record SolicitudResponse(boolean done, String tokenSolicitud, String errorMessage, boolean data) {}
+    record ResultsResponse(boolean done, String tokenSolicitud, String errorMessage, String data) {}
 }
