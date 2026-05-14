@@ -22,7 +22,7 @@ public interface ISimulacionService {
      * de la simulación, como los nombres de las criaturas y sus cantidades iniciales.
      * @return Token asignado a la simulación generada.
      */
-    int solicitar(String nombreUsuario, SolicitudDto sd);
+    String solicitar(String nombreUsuario, SolicitudDto sd);
 
 
     /**
@@ -31,13 +31,13 @@ public interface ISimulacionService {
      * @param usuario El nombre del usuario del cual queremos obtener los tokens.
      * @return lista de tokens del usuario.
      */
-    List<Integer> getTokenUsuario(String usuario);
+    List<String> getTokenUsuario(String usuario);
 
     /**
      * Devuelve el resultado obtenido al realizar una petición con un token.
      *
-     * @param token numero de identificación de la solicitud
+     * @param token identificador de la solicitud
      * @return cadena de texto que representa el estado y evolución del tablero durante la evolución.
      */
-    String getResultado(int token);
+    String getResultado(String token);
 }
