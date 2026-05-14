@@ -1,0 +1,40 @@
+name: Desplegar Javadoc en GitHub Pages
+
+on:
+  # Se ejecuta cada vez que haces un push a la rama principal
+  push:
+    branches: ["main", "master"] 
+  # Te permite ejecutarlo manualmente desde la pestaña Actions
+  workflow_dispatch:
+
+# Permisos necesarios para que GitHub publique la web
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+      
+      - name: Configurar Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Subir la carpeta docs
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './docs' # Aquí le decimos que coja tu carpeta docs
+          
+      - name: Desplegar la web
+        id: deployment
+        uses: actions/deploy-pages@v4
