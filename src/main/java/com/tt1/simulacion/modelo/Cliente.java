@@ -8,7 +8,7 @@ import java.util.List;
 public class Cliente {
 
     private final String nombreUsuario;
-    private final List<Integer> tokens = Collections.synchronizedList(new ArrayList<>());
+    private final List<String> tokens = Collections.synchronizedList(new ArrayList<>());
 
     public Cliente(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
@@ -18,11 +18,11 @@ public class Cliente {
         return nombreUsuario;
     }
 
-    public List<Integer> getTokens() {
+    public List<String> getTokens() {
         return tokens;
     }
 
-    public void addToken(int token) {
+    public void addToken(String token) {
         tokens.add(token);
     }
 }
