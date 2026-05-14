@@ -19,7 +19,7 @@
 | Herramienta | Versión mínima | Para qué se usa |
 |-------------|---------------|-----------------|
 | **Docker Desktop** | 4.x | Ejecutar los contenedores |
-| **Maven** | 3.9.x | Compilar el proyecto (incluido en `C:\Users\Daviti\.maven\`) |
+| **Maven** | 3.9.x | Compilar el proyecto (incluido en `C:\Users\User\.maven\`) |
 | **Java JDK** | 17 | Compilación (no necesario si solo usas Docker) |
 
 > **Importante:** Docker Desktop debe estar **en ejecución** antes de arrancar la aplicación.
@@ -42,10 +42,10 @@ El script compila el proyecto, construye las imágenes Docker y arranca ambos co
 
 ```powershell
 # Desde la carpeta del proyecto TRABAJO-TT1
-cd C:\Users\Daviti\Documents\GitHub\TRABAJO-TT1
+cd C:\Users\User\Documents\GitHub\TRABAJO-TT1
 
 # 1. Compilar el JAR
-& "C:\Users\Daviti\.maven\maven-3.9.15\bin\mvn.cmd" package -DskipTests
+& "C:\Users\User\.maven\maven-3.9.15\bin\mvn.cmd" package -DskipTests
 
 # 2. Construir imágenes y arrancar contenedores
 docker compose up --build -d
@@ -75,7 +75,7 @@ Deberías ver dos contenedores con estado `running`:
 ## 3. Parar la aplicación
 
 ```powershell
-cd C:\Users\Daviti\Documents\GitHub\TRABAJO-TT1
+cd C:\Users\User\Documents\GitHub\TRABAJO-TT1
 docker compose down
 ```
 
@@ -257,8 +257,8 @@ Tras modificar el archivo, hay que recompilar y reiniciar:
 ## 7. Ejecutar los tests
 
 ```powershell
-cd C:\Users\Daviti\Documents\GitHub\TRABAJO-TT1
-& "C:\Users\Daviti\.maven\maven-3.9.15\bin\mvn.cmd" test
+cd C:\Users\User\Documents\GitHub\TRABAJO-TT1
+& "C:\Users\User\.maven\maven-3.9.15\bin\mvn.cmd" test
 ```
 
 El proyecto cuenta con **19 tests** distribuidos en:
