@@ -1,6 +1,6 @@
 package com.tt1.simulacion.modelo;
 
-/** Entidad base del modelo anémico. Almacena posición (x, y) y hambre. */
+/** Entidad base del modelo anémico. Almacena posición (x, y) y hambre (Si no come en 5 turnos, el contador llega a 0 y muere). */
 public abstract class Criatura {
 
     protected final int x;
