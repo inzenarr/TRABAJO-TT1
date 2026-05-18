@@ -48,8 +48,8 @@ public class Test_Comportamiento_Criaturas {
         Gamma gamma = new Gamma(xInicial, yInicial);
         boolean hijoObservado = false;
 
-        // Con prob 1/5, en 100 intentos la probabilidad de no ver ningun hijo es (4/5)^100 ≈ 0.000002%
-        for (int i = 0; i < 100; i++) {
+        // Con prob 1/5, en 1000 es casi imposible.
+        for (int i = 0; i < 10000; i++) {
             List<Criatura> resultado = service.handleComportamiento(gamma);
 
             // Solo puede devolver el padre o el padre + 1 hijo
