@@ -76,7 +76,8 @@ Deberías ver el contenedor `trabajo-tt1-simulacion-1` con estado `running`.
 | Servicio | URL |
 |----------|-----|
 | API REST (Swagger UI) | http://localhost:5000/swagger-ui/index.html |
-| Frontend (si configurado) | http://localhost:8081/solicitud |
+| Frontend — formulario de solicitud | http://localhost:8081/solicitud |
+| Ver grid con token (frontend) | http://localhost:8081/grid?tok={uuid} |
 
 ---
 
