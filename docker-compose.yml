@@ -7,8 +7,9 @@ services:
       - tt1-network
 
   frontend:
+    profiles: ["frontend"]
     build:
-      context: ../trabajo-individual-tt1-pr-ctica-5-dakhadil
+      context: ${FRONTEND_PATH}
     ports:
       - "8081:8081"
     environment:
