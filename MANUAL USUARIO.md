@@ -276,7 +276,7 @@ Endpoint disponible pero no implementado. Devuelve siempre `{"done": true}`.
 
 ---
 
-## 6. Configurar colores y probabilidades
+## 6. Configurar la simulación
 
 Edita el archivo:
 ```
@@ -295,6 +295,16 @@ simulacion.color.gamma=green
 # Probabilidad de que Gamma genere un hijo por paso
 # Valor N → probabilidad 1/N  (ej: 5 = 20%, 10 = 10%, 1 = 100%)
 simulacion.gamma.prob.hijo=5
+
+# Número de pasos (turnos) que dura cada simulación
+simulacion.pasos=5
+
+# Probabilidad (%) de que aparezca comida en cada casilla por turno
+# Ej: 20 → 20% de probabilidad por casilla y turno
+simulacion.comida.probabilidad=20
+
+# Turnos consecutivos sin comer antes de que una criatura muera
+simulacion.criatura.turnos.sin.comer=5
 ```
 
 ### Ejemplos de colores válidos
