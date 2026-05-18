@@ -86,7 +86,12 @@ Documentación interactiva disponible en `http://localhost:5000/swagger-ui/index
 .\arrancar.ps1
 ```
 
-Compila backend y frontend, construye las imágenes Docker y arranca los contenedores.
+Compila el backend, construye la imagen Docker y arranca la API.
+
+Para incluir un frontend, copia `.env.example` a `.env` y configura la ruta:
+```
+FRONTEND_PATH=../mi-proyecto-frontend
+```
 
 ### Opción B — Docker manual
 

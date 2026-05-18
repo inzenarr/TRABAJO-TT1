@@ -1,36 +1,5 @@
 # Manual de Usuario — Simulación TT1
 
-**Producto:** API Motor de Simulación de Criaturas
-
-**Versión:** 1.0.0
-
-**Desarrollado por:** [Daviti,Jose e Iñigo]
-
-**Fecha:** Mayo 2026
-
-## Página del título
-Motor de Simulación Automática de Ecosistemas (API Backend)
-Un servicio basado en Java y Spring Boot para la gestión, simulación y persistencia en memoria de entidades biológicas digitales (Alpha, Beta y Gamma) sobre tableros bidimensionales.
-
-## Aviso de edición y Derechos de autor
-© 2026. Todos los derechos reservados.
-Queda prohibida la reproducción total o parcial de este manual, así como su distribución, sin el consentimiento expreso del autor. Este documento ha sido elaborado como parte del proyecto de la asignatura [Taller Transversal I].
-
-## Términos y condiciones / Descargos de responsabilidad
-Este software está diseñado con fines educativos y de simulación algorítmica. El autor no se hace responsable del uso de esta API en entornos de producción críticos (como por ejemplo el de creación de armas nucleares y otro tipo). La persistencia de los datos (Tokens) se realiza en memoria volátil, los datos se perderán si el servidor se reinicia.
-
-## Marcas registradas
-Java es una marca registrada de Oracle Corporation.
-Docker es una marca registrada de Docker, Inc.
-
-## Garantías
-El software se proporciona "tal cual", sin garantía de ningún tipo, expresa o implícita, incluyendo pero no limitándose a garantías de comerciabilidad o idoneidad para un propósito particular.
-
-## Acuerdos de licencia
-Distribuido bajo la Licencia MIT. Se permite el uso, copia y modificación del software de forma gratuita, siempre que se incluya el aviso de copyright original.
-
----
-
 ## Índice
 
 1. [Requisitos previos](#1-requisitos-previos)
@@ -38,7 +7,7 @@ Distribuido bajo la Licencia MIT. Se permite el uso, copia y modificación del s
 3. [Parar la aplicación](#3-parar-la-aplicación)
 4. [Usar el frontend web](#4-usar-el-frontend-web)
 5. [Usar la API directamente](#5-usar-la-api-directamente)
-6. [Configurar colores y probabilidades](#6-configurar-colores-y-probabilidades)
+6. [Configurar la simulación](#6-configurar-la-simulación)
 7. [Ejecutar los tests](#7-ejecutar-los-tests)
 8. [Cómo funciona la simulación](#8-cómo-funciona-la-simulación)
 9. [Solución de problemas](#9-solución-de-problemas)
@@ -50,7 +19,7 @@ Distribuido bajo la Licencia MIT. Se permite el uso, copia y modificación del s
 | Herramienta | Versión mínima | Para qué se usa |
 |-------------|---------------|-----------------|
 | **Docker Desktop** | 4.x | Ejecutar los contenedores |
-| **Maven** | 3.9.x | Compilar el proyecto (incluido en `C:\Users\User\.maven\`) |
+| **Maven** | 3.9.x | Compilar el proyecto |
 | **Java JDK** | 17 | Compilación (no necesario si solo usas Docker) |
 
 > **Importante:** Docker Desktop debe estar **en ejecución** antes de arrancar la aplicación.
@@ -67,46 +36,54 @@ Haz doble clic en `arrancar.ps1` o ejecútalo desde PowerShell:
 .\arrancar.ps1
 ```
 
-El script compila el proyecto, construye las imágenes Docker y arranca ambos contenedores.
+El script detecta automáticamente Maven, compila el backend, construye la imagen Docker y arranca el contenedor de la API.
+
+#### Integrar tu frontend (opcional)
+
+Si tienes un proyecto frontend compatible, copia `.env.example` a `.env` y rellena la ruta:
+
+```
+# .env
+FRONTEND_PATH=../mi-proyecto-frontend
+```
+
+Al ejecutar el script, compilará también el frontend y lo levantará en el puerto **8081**.
+
+> El archivo `.env` es personal — no lo subas al repositorio.
 
 ### Opción B — Manual
 
 ```powershell
 # Desde la carpeta del proyecto TRABAJO-TT1
-cd C:\Users\User\Documents\GitHub\TRABAJO-TT1
 
-# 1. Compilar el JAR
-& "C:\Users\User\.maven\maven-3.9.15\bin\mvn.cmd" package -DskipTests
+# 1. Compilar el JAR del backend
+mvn package -DskipTests
 
-# 2. Construir imágenes y arrancar contenedores
+# 2. Construir imagen y arrancar contenedor
 docker compose up --build -d
 ```
 
 ### Verificar que está funcionando
 
-Una vez arrancado, comprueba que los dos contenedores están activos:
-
 ```powershell
 docker compose ps
 ```
 
-Deberías ver dos contenedores con estado `running`:
-- `trabajo-tt1-simulacion-1` → API en el puerto **5000**
-- `trabajo-tt1-frontend-1` → Frontend en el puerto **8081**
+Deberías ver el contenedor `trabajo-tt1-simulacion-1` con estado `running`.
 
 ### URLs de acceso
 
 | Servicio | URL |
 |----------|-----|
-| Frontend (interfaz web) | http://localhost:8081/solicitud |
 | API REST (Swagger UI) | http://localhost:5000/swagger-ui/index.html |
+| Frontend (si configurado) | http://localhost:8081/solicitud |
 
 ---
 
 ## 3. Parar la aplicación
 
 ```powershell
-cd C:\Users\User\Documents\GitHub\TRABAJO-TT1
+cd TRABAJO-TT1
 docker compose down
 ```
 
@@ -120,31 +97,29 @@ Abre http://localhost:8081/solicitud en el navegador.
 
 **1. Rellenar el formulario**
 
+Verás tres campos numéricos, uno por tipo de criatura:
+
 | Campo | Descripción | Ejemplo |
 |-------|-------------|---------|
-| Nombre de usuario | Identificador para guardar tus simulaciones | `usuario1` |
-| Tipo de criatura | Selecciona `alpha`, `beta` o `gamma` | `alpha` |
-| Cantidad | Número de criaturas de ese tipo | `2` |
+| Num. de Alpha | Cantidad de criaturas Alpha a colocar | `2` |
+| Num. de Beta | Cantidad de criaturas Beta a colocar | `1` |
+| Num. de Gamma | Cantidad de criaturas Gamma a colocar | `1` |
 
-Puedes añadir varios tipos de criaturas pulsando **"Añadir criatura"**.
+Introduce `0` en los tipos que no quieras incluir.
 
 **2. Lanzar la simulación**
 
-Pulsa **"Simular"**. La API ejecuta la simulación y devuelve un token.
+Pulsa **"Solicitar"**. La API ejecuta la simulación y devuelve un token UUID.
 
 **3. Ver el resultado**
 
-Se muestra un tablero de 10×10 con la evolución paso a paso. Usa el **slider** para navegar entre los pasos (0 al 4).
+Se muestra un tablero de 10×10 con la evolución paso a paso.
 
 Cada color en el tablero corresponde a un tipo de criatura (configurables en `application.properties`):
 - **Rojo** (`red`) → Alpha
 - **Azul** (`blue`) → Beta
 - **Verde** (`green`) → Gamma
 - **Gris** (`#cccccc`) → celda vacía
-
-**4. Historial**
-
-Puedes consultar simulaciones anteriores introduciendo tu nombre de usuario y el token recibido.
 
 ---
 
@@ -171,11 +146,13 @@ La API REST está disponible en http://localhost:5000. Puedes explorarla visualm
 ```json
 {
   "done": true,
-  "token": 1,
-  "error": null,
-  "valid": true
+  "tokenSolicitud": "9bca07ee-784a-42b0-ac23-9c53782af06a",
+  "errorMessage": null,
+  "data": true
 }
 ```
+
+> El `tokenSolicitud` es un **UUID** (cadena larga). Guárdalo para consultar el resultado.
 
 **Ejemplo con curl:**
 ```bash
@@ -191,7 +168,7 @@ curl -X POST "http://localhost:5000/Solicitud/Solicitar?nombreUsuario=usuario1" 
 **Parámetros de query:**
 - `nombreUsuario` (string)
 
-**Respuesta:** lista de tokens `[1, 2, 3]`
+**Respuesta:** lista de UUID `["9bca07ee-784a-42b0-ac23-9c53782af06a", "..."]`
 
 **Ejemplo:**
 ```bash
@@ -204,14 +181,14 @@ curl "http://localhost:5000/Solicitud/GetSolicitudesUsuario?nombreUsuario=usuari
 
 **Parámetros de query:**
 - `nombreUsuario` (string)
-- `tok` (int) — token devuelto al crear la simulación
+- `tok` (string) — UUID devuelto al crear la simulación
 
 **Respuesta:**
 ```json
 {
   "done": true,
-  "token": 1,
-  "error": null,
+  "tokenSolicitud": "9bca07ee-784a-42b0-ac23-9c53782af06a",
+  "errorMessage": null,
   "data": "10\n0,2,3,red\n0,7,1,blue\n..."
 }
 ```
@@ -225,7 +202,7 @@ El campo `data` contiene el estado del tablero en formato texto:
 
 **Ejemplo:**
 ```bash
-curl -X POST "http://localhost:5000/Resultados?nombreUsuario=usuario1&tok=1"
+curl -X POST "http://localhost:5000/Resultados?nombreUsuario=usuario1&tok=9bca07ee-784a-42b0-ac23-9c53782af06a"
 ```
 
 ---
@@ -234,9 +211,9 @@ curl -X POST "http://localhost:5000/Resultados?nombreUsuario=usuario1&tok=1"
 
 **Parámetros de query:**
 - `nombreUsuario` (string)
-- `tok` (int)
+- `tok` (string) — UUID
 
-Devuelve `[tok]` si existe o `[]` si no.
+Devuelve `["<uuid>"]` si existe o `[]` si no.
 
 ---
 
@@ -288,8 +265,8 @@ Tras modificar el archivo, hay que recompilar y reiniciar:
 ## 7. Ejecutar los tests
 
 ```powershell
-cd C:\Users\User\Documents\GitHub\TRABAJO-TT1
-& "C:\Users\User\.maven\maven-3.9.15\bin\mvn.cmd" test
+cd TRABAJO-TT1
+mvn test
 ```
 
 El proyecto cuenta con **19 tests** distribuidos en:
@@ -310,25 +287,39 @@ El proyecto cuenta con **19 tests** distribuidos en:
 ### El tablero
 
 - Cuadrícula de **10×10** celdas
-- Duración: **5 pasos** (0 al 4)
+- Duración: configurable mediante `simulacion.pasos` (por defecto **5 pasos**, numerados del 0 al 4)
 - Las criaturas se colocan en posiciones únicas aleatorias al inicio
+
+### Mecánica de comida y hambre
+
+En **cada turno**, cada casilla del tablero (tanto vacías como ocupadas) tiene una probabilidad configurable (por defecto **20%**) de generar comida.
+
+- Si una criatura está en una casilla con comida, la **come** y su contador de hambre se reinicia a 0.
+- Si no hay comida en su casilla, el contador de hambre sube en 1.
+- Cuando el contador de hambre alcanza el límite configurable (por defecto **5 turnos sin comer**), la criatura **muere** y desaparece del tablero.
+- La comida **desaparece** al ser consumida.
+
+> Esto aplica a **todas** las criaturas: Alpha, Beta y Gamma.
 
 ### Tipos de criaturas
 
 #### Alpha (rojo por defecto)
 - **Permanece inmóvil** en su posición durante toda la simulación
 - Bloquea la casilla que ocupa: ninguna otra criatura puede entrar
+- Muere si no come durante el número de turnos configurado
 
 #### Beta (azul por defecto)
 - Se **mueve una casilla** en cada paso (arriba, abajo, izquierda o derecha, 25% cada dirección)
 - Si la casilla de destino está ocupada, **permanece** donde está
 - No puede salir del tablero (rebota en los bordes)
+- Muere si no come durante el número de turnos configurado
 
 #### Gamma (verde por defecto)
 - **Permanece** en su posición (no se mueve)
 - Con probabilidad **1/N** (configurable) intenta **generar un hijo** en una casilla adyacente aleatoria
 - Si la casilla elegida está ocupada, el nacimiento se aborta ese paso
-- El hijo es independiente y se comporta exactamente igual que el padre
+- El hijo nace con hambre = 0 (contador reiniciado)
+- Muere si no come durante el número de turnos configurado
 
 ### Orden de resolución de colisiones por paso
 
@@ -363,21 +354,3 @@ docker compose restart
 ```powershell
 docker compose logs -f
 ```
-
----
-
-## Glosario
-
-* **API:** Interfaz de Programación de Aplicaciones. Forma en la que se comunica con el sistema.
-* **Token:** Identificador numérico autoincremental único que se asigna a cada simulación ejecutada.
-* **Cliente:** Estructura de datos interna que asocia a un nombre de usuario con su historial de tokens.
-* **DTO (Data Transfer Object):** Formato del paquete de datos JSON utilizado para enviar la configuración de la simulación.
-
----
-
-## Información de contacto de la empresa/negocio
-
-Para reportes de fallos (bugs), sugerencias de mejora o integración del frontend, por favor contacte con:
-
-* **Repositorio del código:** trabajo
-* **Sección de comentarios / Issues:** Por favor, abra un "Issue" en el repositorio oficial para seguimiento de errores o inicie una “Discussion”.

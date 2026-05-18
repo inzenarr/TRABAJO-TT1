@@ -21,3 +21,6 @@ Thumbs.db
 
 # GitHub Copilot / java-upgrade
 .github/java-upgrade/
+
+# Variables de entorno locales
+.env
