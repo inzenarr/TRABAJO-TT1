@@ -1,5 +1,57 @@
 # Manual de Usuario — Simulación TT1
 
+**Producto:** API Motor de Simulación de Criaturas
+
+**Versión:** 1.0.0
+
+**Desarrollado por:** Daviti, Jose e Iñigo
+
+**Fecha:** Mayo 2026
+
+---
+
+## Página del título
+
+Motor de Simulación Automática de Ecosistemas (API Backend)
+
+Un servicio basado en Java y Spring Boot para la gestión, simulación y persistencia en memoria de entidades biológicas digitales (Alpha, Beta y Gamma) sobre tableros bidimensionales.
+
+---
+
+## Aviso de edición y Derechos de autor
+
+© 2026. Todos los derechos reservados.
+Queda prohibida la reproducción total o parcial de este manual, así como su distribución, sin el consentimiento expreso del autor. Este documento ha sido elaborado como parte del proyecto de la asignatura Taller Transversal I.
+
+---
+
+## Términos y condiciones / Descargos de responsabilidad
+
+Este software está diseñado con fines educativos y de simulación algorítmica. El autor no se hace responsable del uso de esta API en entornos de producción críticos. La persistencia de los datos (Tokens) se realiza en memoria volátil; los datos se perderán si el servidor se reinicia.
+
+Este software no está homologado para su uso en instalaciones nucleares, sistemas de armamento, dispositivos médicos de soporte vital, navegación aérea ni en cualquier otro entorno donde un fallo del software pueda provocar daños físicos, personales o medioambientales graves.
+
+---
+
+## Marcas registradas
+
+Java es una marca registrada de Oracle Corporation.
+Docker es una marca registrada de Docker, Inc.
+
+---
+
+## Garantías
+
+El software se proporciona "tal cual", sin garantía de ningún tipo, expresa o implícita, incluyendo pero no limitándose a garantías de comerciabilidad o idoneidad para un propósito particular.
+
+---
+
+## Acuerdos de licencia
+
+Distribuido bajo la Licencia MIT. Se permite el uso, copia y modificación del software de forma gratuita, siempre que se incluya el aviso de copyright original.
+
+---
+
 ## Índice
 
 1. [Requisitos previos](#1-requisitos-previos)
